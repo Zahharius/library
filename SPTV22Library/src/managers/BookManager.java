@@ -39,4 +39,14 @@ public class BookManager {
         System.out.println("Added book: "+book.toString());
         return book;
     }
+
+    public void printListBooks(Book[] books) {
+        System.out.println("---List Books--- ");
+        for (int i=0; i<books.length; i++){
+            System.out.printf("%d. %s%n",
+                    i+1,
+                    books[i].getTitle()
+            );
+        }
+    }
 }

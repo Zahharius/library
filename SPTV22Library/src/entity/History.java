@@ -16,6 +16,10 @@ import java.util.Objects;/**
  * @author admin
  */
 public class History {
+
+    public static History TakeOutBook(Book[] books, Reader[] readers) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     private Book book;
     private Reader reader;
     private Date takeOutBook;
