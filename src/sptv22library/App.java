@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package sptv22library;
+import managers.SaveManager;
 import managers.HistoryManager;
 import entity.Reader;
 import entity.Author;
@@ -24,18 +25,20 @@ public class App {
     private final Scanner scanner;
     private Book[] books;
     private Reader[] readers;
-    private final BookManager bookManager;
     private History[] histories;
+    private final BookManager bookManager;
     private final HistoryManager historyManager;
     private final ReaderManager readerManager;
-
+    private final SaveManager saveManager;
+    
     public App() {
         this.scanner = new Scanner(System.in);
-        this.books = new Book[0];
+        this.saveManager = new SaveManager();
+        this.books = saveManager.loadBooks();
         this.histories = new History[0];
         this.bookManager= new BookManager(scanner);
         this.readerManager= new ReaderManager(scanner);
-        this.readers = new Reader[0];
+        this.readers = saveManager.loadReaders();
         this.historyManager = new HistoryManager(scanner, readerManager, bookManager);
     }
     
@@ -63,13 +66,15 @@ public class App {
                 case 1:
                     this.books = Arrays.copyOf(this.books, this.books.length+1);
                     this.books[this.books.length -1] = bookManager.addBook();
+                    saveManager.saveBooks(this.books);
                     break;
                 case 2:
                     bookManager.printListBooks(books);
                     break;
                 case 3:
-                    this.readers = Arrays.copyOf(this.readers, this.books.length+1);
+                    this.readers = Arrays.copyOf(this.readers, this.readers.length+1);
                     this.readers[this.readers.length -1] = readerManager.addReader();
+                    saveManager.saveReaders(this.readers);
                     break;
                 case 4:
                     readerManager.printListReaders(readers);
@@ -80,6 +85,7 @@ public class App {
                     break;
                 case 6:
                     historyManager.printListReadingBooks(histories);
+                    saveManager.saveHistories(histories);
                     break;
                  case 7:
                     historyManager.returnBook(histories);
