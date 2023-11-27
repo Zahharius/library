@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package entity;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -15,7 +16,7 @@ import java.util.Objects;/**
  *
  * @author admin
  */
-public class History {
+public class History implements Serializable{
 
     public static History TakeOutBook(Book[] books, Reader[] readers) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

@@ -8,8 +8,15 @@ package managers;
 import entity.Book;
 import entity.History;
 import entity.Reader;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import tools.InputProtection;
 
 /**
  *
@@ -39,31 +46,67 @@ public class HistoryManager {
      * 7 записываем в хистори дату выдачи книги 
      * @return History history
      */
-    public History TakeOutBook(Book[] books, Reader[] readers){
+    public History TakeOutBook(List<Book> books, List<Reader> readers){
         History history = new History();
         bookManager.printListBooks(books);
         System.out.print("enter book number from list: ");
-        int numberBook = scanner.nextInt(); scanner.nextLine();
-        history.setBook(books[numberBook - 1]);
+        int numberBook =  InputProtection.intInput(1,books.size());///scanner.nextInt(); scanner.nextLine();
+        history.setBook(books.get(numberBook - 1));
         readerManager.printListReaders(readers);
         System.out.print("enter reader from list: ");
-        int numberReader = scanner.nextInt(); scanner.nextLine();
-        history.setReader(readers [numberReader-1]);
+        int numberReader = InputProtection.intInput(0, readers.size());///scanner.nextInt(); scanner.nextLine();
+        history.setReader(readers.get (numberReader-1));
         history.setTakeOutBook(new GregorianCalendar().getTime());
         
         return history;
     }
-    public void printListReadingBooks(History[] histories){
+    public void printListReadingBooks(List<History> histories){
         System.out.println("---List reading books---");
-        for (int i = 0; i < histories.length; i++) {
-            if(histories[i].getReturnBook() == null){
+        for (int i = 0; i < histories.size(); i++) {
+            if(histories.get(i).getReturnBook() == null){
             System.out.printf("%d. %s. read %s %s",
                     i+1,
-                    histories[i].getBook().getTitle(),
-                    histories[i].getReader().getFirstname(),
-                    histories[i].getReader().getLastname()
+                    histories.get(i).getBook().getTitle(),
+                    histories.get(i).getReader().getFirstname(),
+                    histories.get(i).getReader().getLastname()
             ); 
         }
     }
 }
+
+    public void returnBook(List<History>  histories) {
+        System.out.println("----vozvrat knigi----");
+        this.printListReadingBooks(histories);
+        System.out.println("enter number book: ");
+        int numberReturnBook = InputProtection.intInput(1, histories.size());
+        histories.get(numberReturnBook -1).setReturnBook(new GregorianCalendar().getTime());
+    }
+
+    public void bookRating(List<History> histories) {
+        Map<Book,Integer> mapRatingBook= new HashMap<>();
+        for (int i = 0; i < histories.size(); i++) {
+            if (mapRatingBook.containsKey(histories.get(i).getBook())){      
+            mapRatingBook.put(histories.get(i).getBook(), mapRatingBook.get(histories.get(i).getBook())+1);
+            }else{
+                mapRatingBook.put(histories.get(i).getBook(), 1);
+            }
+        }
+        Map<Book, Integer> sortedMapRatingBook = mapRatingBook.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (e1,e2) ->e1,
+                LinkedHashMap::new));
+        int n = 1;
+        for (Map.Entry<Book, Integer> entry : mapRatingBook.entrySet()) {
+            System.out.printf("%d. %s: %d",
+                    n,
+                    entry.getKey().getTitle(),
+                    entry.getValue());
+
+            
+        }
+    }
 }
