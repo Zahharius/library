@@ -6,20 +6,25 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
  *
  * @author admin
  */
-public class Book implements Serializable{
+    public class Book implements Serializable{
     private String title;
     private int publishedYear;
-    private Author[] authors = new Author[0];
+    private List<Author> authors;
+    private int quantity;
+    private int count;
+    
     
     public Book(){
-        
+        this.authors = new ArrayList<>();
     }
 
     public String getTitle() {
@@ -37,26 +42,21 @@ public class Book implements Serializable{
     public void setPublishedYear(int publishedYear) {
         this.publishedYear = publishedYear;
     }
-    
-    public Author[] getAuthors() {
+
+    public List<Author> getAuthors() {
         return authors;
     }
-    
-    public void addAuthor(Author author){
-        this.authors = Arrays.copyOf(authors, authors.length+1);
-        this.authors[this.authors.length-1]=author;
-    }
 
-    public void setAuthors(Author[] authors) {
+    public void setAuthors(List<Author> authors) {
         this.authors = authors;
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.title);
-        hash = 67 * hash + this.publishedYear;
-        hash = 67 * hash + Arrays.deepHashCode(this.authors);
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.title);
+        hash = 97 * hash + this.publishedYear;
+        hash = 97 * hash + Objects.hashCode(this.authors);
         return hash;
     }
 
@@ -78,7 +78,7 @@ public class Book implements Serializable{
         if (!Objects.equals(this.title, other.title)) {
             return false;
         }
-        if (!Arrays.deepEquals(this.authors, other.authors)) {
+        if (!Objects.equals(this.authors, other.authors)) {
             return false;
         }
         return true;
@@ -87,10 +87,28 @@ public class Book implements Serializable{
     @Override
     public String toString() {
         return "Book{" 
-                +"title=" + title 
-                + ", publishedYear=" + publishedYear 
-                + ", authors=" + Arrays.toString(authors)
-                + '}';
+                + "title=" + title +
+                ", publishedYear=" + publishedYear +
+                ", authors=" + Arrays.toString(authors.toArray()) 
+                +", quantity =" + quantity
+                +", count =" + count
+                +'}';
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
     
 }

@@ -36,8 +36,12 @@ public class BookManager {
             String authorFirstname= scanner.nextLine();
             System.out.printf("enter author (%d) lastname: ",i+1);
             String authorLastname= scanner.nextLine();
-            book.addAuthor(new Author(authorFirstname, authorLastname));
+            book.getAuthors().add(new Author(authorFirstname, authorLastname));
         }
+        System.out.print("Enter quantity of books: ");
+        book.setQuantity(InputProtection.intInput(1, 10));
+        book.setCount(book.getQuantity());
+        
         System.out.println("Added book: "+book.toString());
         return book;
     }
@@ -45,9 +49,19 @@ public class BookManager {
     public void printListBooks(List<Book> books) {
         System.out.println("---List Books--- ");
         for (int i=0; i< books.size(); i++){
-            System.out.printf("%d. %s%n",
+            StringBuilder sbAuthorsBooks = new StringBuilder();
+                for(int j = 0; j<books.get(i).getAuthors().size();j++){
+                    sbAuthorsBooks.append(books.get(i).getAuthors().get(j).getFirstname());
+                    sbAuthorsBooks.append(" ");
+                    sbAuthorsBooks.append(books.get(i).getAuthors().get(j).getLastname());
+                    sbAuthorsBooks.append(". ");
+                }
+                        
+            System.out.printf("%d. %s. %s In store: %d%n",
                     i+1,
-                    books.get(i).getTitle()
+                    books.get(i).getTitle(),
+                    sbAuthorsBooks.toString(),
+                    books.get(i).getCount()
             );
         }
     }

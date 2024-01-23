@@ -51,14 +51,19 @@ public class HistoryManager {
         bookManager.printListBooks(books);
         System.out.print("enter book number from list: ");
         int numberBook =  InputProtection.intInput(1,books.size());///scanner.nextInt(); scanner.nextLine();
-        history.setBook(books.get(numberBook - 1));
-        readerManager.printListReaders(readers);
-        System.out.print("enter reader from list: ");
-        int numberReader = InputProtection.intInput(0, readers.size());///scanner.nextInt(); scanner.nextLine();
-        history.setReader(readers.get (numberReader-1));
-        history.setTakeOutBook(new GregorianCalendar().getTime());
-        
-        return history;
+        if(books.get(numberBook - 1).getCount()>0){
+            books.get(numberBook - 1).setCount(books.get(numberBook - 1).getCount()-1);
+            history.setBook(books.get(numberBook - 1));
+            readerManager.printListReaders(readers);
+            System.out.print("enter reader from list: ");
+            int numberReader = InputProtection.intInput(0, readers.size());///scanner.nextInt(); scanner.nextLine();
+            history.setReader(readers.get (numberReader-1));
+            history.setTakeOutBook(new GregorianCalendar().getTime());
+            return history;
+        }else{
+            System.out.println("All books are taken");
+            return null;
+        }
     }
     public void printListReadingBooks(List<History> histories){
         System.out.println("---List reading books---");
@@ -79,7 +84,14 @@ public class HistoryManager {
         this.printListReadingBooks(histories);
         System.out.println("enter number book: ");
         int numberReturnBook = InputProtection.intInput(1, histories.size());
-        histories.get(numberReturnBook -1).setReturnBook(new GregorianCalendar().getTime());
+        if(histories.get(numberReturnBook-1).getBook().getCount() <
+                histories.get(numberReturnBook-1).getBook().getQuantity()){
+             histories.get(numberReturnBook -1).getBook().setCount(histories.get(numberReturnBook -1).getBook().getCount());
+             histories.get(numberReturnBook -1).setReturnBook(new GregorianCalendar().getTime());
+        }
+        else{
+            System.out.println("All books already stock");
+        }
     }
 
     public void bookRating(List<History> histories) {
@@ -105,8 +117,7 @@ public class HistoryManager {
                     n,
                     entry.getKey().getTitle(),
                     entry.getValue());
-
-            
+            n++;
         }
     }
 }

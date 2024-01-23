@@ -60,7 +60,10 @@ public class App {
             System.out.println("7-return book");
             System.out.println("8-book rating");
             System.out.print("enter task number: ");
-            int task = InputProtection.intInput(0,10);
+            int task = InputProtection.intInput(0,8);
+            System.out.printf("You select task %d, for exit press \"0\", to continue press \"1\": ",task);
+            int toCont = InputProtection.intInput(0,1);
+            if(toCont ==0 )continue;
             switch (task) {
                 case 0:
                     repeat=false;
@@ -80,8 +83,11 @@ public class App {
                     readerManager.printListReaders(readers);
                     break;
                 case 5:
-                    this.histories.add(historyManager.TakeOutBook(books, readers));
+                    History history =historyManager.TakeOutBook(books, readers);
+                    if (history != null){
+                    this.histories.add(history);
                     saveManager.saveHistories(histories);
+                    }
                     break;
                 case 6:
                     historyManager.printListReadingBooks(histories);
@@ -93,7 +99,7 @@ public class App {
                     break;
                  case 8:
                     historyManager.bookRating(this.histories);
-                    break;
+                    break; 
                 default:
                     System.out.println("choose task FROM THE LIST ");
             }
