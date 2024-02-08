@@ -4,107 +4,127 @@
  * and open the template in the editor.
  */
 package sptv22library;
-import managers.SaveManager;
+
 import managers.HistoryManager;
-import entity.Reader;
-import entity.Author;
-import entity.Book;
+import managers.ReaderManager;
 import entity.History;
-import java.util.Arrays;
+import entity.User;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Scanner;
 import managers.BookManager;
-import managers.HistoryManager;
-import managers.ReaderManager;
+import managers.DatabaseManager;
 import tools.InputProtection;
+import tools.PassEncrypt;
 
 /**
  *
  * @author admin
  */
 public class App {
-    private final Scanner scanner;
-    private List<Book> books;
-    private List<Reader> readers;
-    private List<History> histories;
-    private final BookManager bookManager;
-    private final HistoryManager historyManager;
-    private final ReaderManager readerManager;
-    private final SaveManager saveManager;
+    public static User user;
+    private final Scanner scanner; 
+    //private List<Book> books;
+    //private List<User> users;
+    //private List<History> histories;
     
+    private final BookManager bookManager;
+    private final ReaderManager readerManager;
+    private final HistoryManager historyManager;
+    //private final SaveManager saveManager;
+    private final DatabaseManager databaseManager;
+
     public App() {
         this.scanner = new Scanner(System.in);
-        this.saveManager = new SaveManager();
-        this.books = saveManager.loadBooks();
-        this.histories = saveManager.loadHistories();
-        this.bookManager= new BookManager(scanner);
-        this.readerManager= new ReaderManager(scanner);
-        this.readers = saveManager.loadReaders();
-        this.historyManager = new HistoryManager(scanner, readerManager, bookManager);
+//        this.saveManager = new SaveManager();
+        this.databaseManager = new DatabaseManager();
+       // this.books = saveManager.loadBooks();
+        //this.users = saveManager.loadUsers();
+        //this.histories = saveManager.loadHistories();
+        this.bookManager = new BookManager(scanner);
+        this.readerManager = new ReaderManager(scanner);
+        this.historyManager = new HistoryManager(scanner,readerManager,bookManager);
     }
     
     
     
-    public void run(){
+    public void run() throws InvalidKeySpecException {
+        System.out.println("If you have a login and password press y, otherwise press n");
+        String word = scanner.nextLine();
+        if("n".equals(word)){
+            databaseManager.saveUser(readerManager.addReader());
+        }
+        for(int attempt=0;attempt<3;attempt++){
+            System.out.print("Please enter your login: ");
+            String login = scanner.nextLine();
+            System.out.print("Please enter your password: ");
+            String password = scanner.nextLine();
+            PassEncrypt pe =new PassEncrypt();
+            String encryptPassword = pe.getEncryptPassword(password, pe.getSalt());
+            App.user = databaseManager.authorization(login, encryptPassword);
+            if(App.user != null){
+                break;
+            }
+            System.out.println("Invalid login or password");
+        }
+        if(App.user == null) return;
+        System.out.printf("Hello %s %s, welcome to the library%n",App.user.getReader().getFirstname(),App.user.getReader().getLastname());
         boolean repeat = true;
-        System.out.println("--- Library ---");
+        System.out.println("------- Library -------");
         do{
-            System.out.println("List of tasks:");
-            System.out.println("0-exit");
-            System.out.println("1-add new book");
-            System.out.println("2-print list of books");
-            System.out.println("3-add new reader");
-            System.out.println("4-print list of readers");
-            System.out.println("5-take out book");
-            System.out.println("6-print taken books");
-            System.out.println("7-return book");
-            System.out.println("8-book rating");
-            System.out.print("enter task number: ");
-            int task = InputProtection.intInput(0,8);
+            System.out.println("List tasks:");
+            System.out.println("0. Exit");
+            System.out.println("1. Add new book");
+            System.out.println("2. Print list books");
+            System.out.println("3. Add new reader");
+            System.out.println("4. Print list readers");
+            System.out.println("5. Take out book");
+            System.out.println("6. Print list reading books");
+            System.out.println("7. Return book");
+            System.out.println("8. Book rating");
+            System.out.println("9. User rating");
+            System.out.print("Enter task number: ");
+            int task = InputProtection.intInput(0,9); 
             System.out.printf("You select task %d, for exit press \"0\", to continue press \"1\": ",task);
-            int toCont = InputProtection.intInput(0,1);
-            if(toCont ==0 )continue;
+            int toContinue = InputProtection.intInput(0,1);
+            if(toContinue == 0) continue;
             switch (task) {
                 case 0:
-                    repeat=false;
+                    repeat = false;
                     break;
                 case 1:
-                    this.books.add(bookManager.addBook());
-                    saveManager.saveBooks(this.books);
+                    bookManager.addBook(databaseManager);
                     break;
                 case 2:
-                    bookManager.printListBooks(books);
+                    bookManager.printListBooks(databaseManager);
                     break;
                 case 3:
-                    this.readers.add(readerManager.addReader());
-                    saveManager.saveReaders(this.readers);
+                    databaseManager.saveUser(readerManager.addReader());
                     break;
                 case 4:
-                    readerManager.printListReaders(readers);
+                    readerManager.printListUserss(databaseManager);
                     break;
                 case 5:
-                    History history =historyManager.TakeOutBook(books, readers);
-                    if (history != null){
-                    this.histories.add(history);
-                    saveManager.saveHistories(histories);
-                    }
+                    historyManager.takeOutBook(databaseManager);
                     break;
                 case 6:
-                    historyManager.printListReadingBooks(histories);
-                    saveManager.saveHistories(histories);
+                    historyManager.printListReadingBooks(databaseManager);
                     break;
-                 case 7:
-                    historyManager.returnBook(histories);
-                    saveManager.saveHistories(histories);
+                case 7:
+                    historyManager.returnBook(databaseManager);
                     break;
-                 case 8:
-                    historyManager.bookRating(this.histories);
-                    break; 
+                case 8:
+                    historyManager.bookRating(databaseManager);
+                    break;
+                case 9:
+                    historyManager.userRating(databaseManager);
+                    break;
                 default:
-                    System.out.println("choose task FROM THE LIST ");
+                    System.out.println("Select from list tasks!");
             }
-            System.out.println("------------------------------");
-    }while(repeat);
+            System.out.println("-----------------------");
+        }while(repeat);
         System.out.println("Bye-bye!");
-}
+    }
+    
 }

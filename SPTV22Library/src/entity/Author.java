@@ -7,29 +7,39 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
  * @author admin
  */
+@Entity
+@Table(name = "author")
 public class Author implements Serializable{
-    private String firstname;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String fistname;
     private String lastname;
 
     public Author() {
     }
 
-    public Author(String firstname, String lastname) {
-        this.firstname = firstname;
+    public Author(String fistname, String lastname) {
+        this.fistname = fistname;
         this.lastname = lastname;
     }
+    
 
-    public String getFirstname() {
-        return firstname;
+    public String getFistname() {
+        return fistname;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFistname(String fistname) {
+        this.fistname = fistname;
     }
 
     public String getLastname() {
@@ -43,8 +53,8 @@ public class Author implements Serializable{
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 71 * hash + Objects.hashCode(this.firstname);
-        hash = 71 * hash + Objects.hashCode(this.lastname);
+        hash = 11 * hash + Objects.hashCode(this.fistname);
+        hash = 11 * hash + Objects.hashCode(this.lastname);
         return hash;
     }
 
@@ -60,7 +70,7 @@ public class Author implements Serializable{
             return false;
         }
         final Author other = (Author) obj;
-        if (!Objects.equals(this.firstname, other.firstname)) {
+        if (!Objects.equals(this.fistname, other.fistname)) {
             return false;
         }
         if (!Objects.equals(this.lastname, other.lastname)) {
@@ -72,9 +82,17 @@ public class Author implements Serializable{
     @Override
     public String toString() {
         return "Author{" 
-                + "firstname=" + firstname 
+                + "fistname=" + fistname 
                 + ", lastname=" + lastname 
                 + '}';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
     
 }

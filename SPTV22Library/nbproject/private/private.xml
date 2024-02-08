@@ -6,13 +6,17 @@
             <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/managers/ReaderManager.java</file>
             <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/managers/SaveManager.java</file>
             <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/sptv22library/SPTV22Library.java</file>
+            <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/META-INF/persistence.xml</file>
+            <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/tools/InputProtection.java</file>
+            <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/managers/DatabaseManager.java</file>
+            <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/entity/User.java</file>
+            <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/managers/BookManager.java</file>
+            <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/sptv22library/App.java</file>
             <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/entity/Author.java</file>
             <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/managers/HistoryManager.java</file>
-            <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/tools/InputProtection.java</file>
             <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/entity/Reader.java</file>
-            <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/managers/BookManager.java</file>
             <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/entity/Book.java</file>
-            <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/sptv22library/App.java</file>
+            <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/tools/PassEncrypt.java</file>
             <file>file:/C:/Users/golan/Downloads/SPTV22Library/src/entity/History.java</file>
         </group>
     </open-files>

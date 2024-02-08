@@ -5,6 +5,8 @@
  */
 package sptv22library;
 
+import java.security.spec.InvalidKeySpecException;
+
 /**
  *
  * @author admin
@@ -14,10 +16,8 @@ public class SPTV22Library {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        // TODO code application logic here
-        App app;
-        app=new App();
+    public static void main(String[] args) throws InvalidKeySpecException {
+        App app = new App();
         app.run();
     }
     

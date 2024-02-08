@@ -11,52 +11,54 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 /**
  *
  * @author admin
  */
 @Entity
-public class Reader implements Serializable{
+public class User implements Serializable{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstname;
-    private String lastname;
-    private String phone;
+    private String login;
+    private String password;
+    @OneToOne
+    private Reader reader;
 
-    public Reader() {
+    public User() {
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getLogin() {
+        return login;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getPassword() {
+        return password;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getPhone() {
-        return phone;
+    public Reader getReader() {
+        return reader;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setReader(Reader reader) {
+        this.reader = reader;
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 89 * hash + Objects.hashCode(this.firstname);
-        hash = 89 * hash + Objects.hashCode(this.lastname);
-        hash = 89 * hash + Objects.hashCode(this.phone);
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.login);
+        hash = 23 * hash + Objects.hashCode(this.password);
+        hash = 23 * hash + Objects.hashCode(this.reader);
         return hash;
     }
 
@@ -71,14 +73,14 @@ public class Reader implements Serializable{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Reader other = (Reader) obj;
-        if (!Objects.equals(this.firstname, other.firstname)) {
+        final User other = (User) obj;
+        if (!Objects.equals(this.login, other.login)) {
             return false;
         }
-        if (!Objects.equals(this.lastname, other.lastname)) {
+        if (!Objects.equals(this.password, other.password)) {
             return false;
         }
-        if (!Objects.equals(this.phone, other.phone)) {
+        if (!Objects.equals(this.reader, other.reader)) {
             return false;
         }
         return true;
@@ -86,10 +88,11 @@ public class Reader implements Serializable{
 
     @Override
     public String toString() {
-        return "Reader{" 
-                + "firstname=" + firstname 
-                + ", lastname=" + lastname 
-                + ", phone=" + phone 
+        return "User{" 
+                + "login=" + login 
+                + ", password=" + password 
+                + ", reader=" + reader.getFirstname()
+                + " " + reader.getLastname()
                 + '}';
     }
 

@@ -7,7 +7,7 @@ package managers;
 
 import entity.Book;
 import entity.History;
-import entity.Reader;
+import entity.User;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,8 +16,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -26,7 +24,7 @@ import java.util.logging.Logger;
  */
 public class SaveManager {
     private final String BOOK_FILENAME = "books";
-    private final String READER_FILENAME = "readers";
+    private final String READER_FILENAME = "users";
     private final String HISTORIES_FILENAME = "histories";
 
     public List<Book> loadBooks() {
@@ -61,14 +59,14 @@ public class SaveManager {
             System.out.println("Error I/O!");
         }
     }
-    public List<Reader> loadReaders() {
-        List<Reader> readers = new ArrayList<>();
+    public List<User> loadUsers() {
+        List<User> users = new ArrayList<>();
         FileInputStream fis;
         ObjectInputStream ois;
         try {
             fis = new FileInputStream(READER_FILENAME);
             ois = new ObjectInputStream(fis);
-            readers = (List<Reader>) ois.readObject();
+            users = (List<User>) ois.readObject();
         } catch (FileNotFoundException ex) {
             System.out.printf("File \"%s\" not found!%n",READER_FILENAME);
         } catch (IOException ex) {
@@ -76,16 +74,16 @@ public class SaveManager {
         } catch (ClassNotFoundException ex) {
             System.out.printf("Class \"%s\" not found!%n",READER_FILENAME);
         }
-        return readers;
+        return users;
     }
 
-    public void saveReaders(List<Reader> readers) {
+    public void saveReaders(List<User> users) {
         ObjectOutputStream oos;
         FileOutputStream fos;
         try {
             fos = new FileOutputStream(READER_FILENAME);
             oos = new ObjectOutputStream(fos);
-            oos.writeObject(readers);
+            oos.writeObject(users);
             oos.flush();
         } catch (FileNotFoundException ex) {
            System.out.printf("File \"%s\" not found!%n",READER_FILENAME);

@@ -4,27 +4,37 @@
  * and open the template in the editor.
  */
 package entity;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+
 /**
  *
  * @author admin
  */
-import java.util.Objects;/**
- *
- * @author admin
- */
+@Entity
 public class History implements Serializable{
-
-    public static History TakeOutBook(Book[] books, Reader[] readers) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @OneToOne
     private Book book;
-    private Reader reader;
+    @OneToOne
+    private User user;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date takeOutBook;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date returnBook;
+
+    public History() {
+    }
 
     public Book getBook() {
         return book;
@@ -34,12 +44,12 @@ public class History implements Serializable{
         this.book = book;
     }
 
-    public Reader getReader() {
-        return reader;
+    public User getUser() {
+        return user;
     }
 
-    public void setReader(Reader reader) {
-        this.reader = reader;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Date getTakeOutBook() {
@@ -60,11 +70,11 @@ public class History implements Serializable{
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 17 * hash + Objects.hashCode(this.book);
-        hash = 17 * hash + Objects.hashCode(this.reader);
-        hash = 17 * hash + Objects.hashCode(this.takeOutBook);
-        hash = 17 * hash + Objects.hashCode(this.returnBook);
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.book);
+        hash = 83 * hash + Objects.hashCode(this.user);
+        hash = 83 * hash + Objects.hashCode(this.takeOutBook);
+        hash = 83 * hash + Objects.hashCode(this.returnBook);
         return hash;
     }
 
@@ -83,7 +93,7 @@ public class History implements Serializable{
         if (!Objects.equals(this.book, other.book)) {
             return false;
         }
-        if (!Objects.equals(this.reader, other.reader)) {
+        if (!Objects.equals(this.user, other.user)) {
             return false;
         }
         if (!Objects.equals(this.takeOutBook, other.takeOutBook)) {
@@ -100,11 +110,20 @@ public class History implements Serializable{
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.YYYY");
         return "History{" 
                 + "book=" + book.getTitle()
-                + ", reader=" + reader.getFirstname()
-                + "" + reader.getLastname()
-                + ", takeOutBook=" + sdf.format(takeOutBook)
+                + ", user=" + user.getReader().getFirstname()
+                + " " + user.getReader().getLastname()
+                + " login="+user.getLogin()
+                + ", takeOutBook=" + sdf.format(takeOutBook) 
                 + ", returnBook=" + sdf.format(returnBook)
                 + '}';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
     
 }
