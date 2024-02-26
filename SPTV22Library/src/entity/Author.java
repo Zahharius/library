@@ -18,7 +18,7 @@ import javax.persistence.Table;
  * @author admin
  */
 @Entity
-@Table(name = "author")
+@Table(name = "authors")
 public class Author implements Serializable{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -62,7 +62,7 @@ public class DatabaseManager {
         return em.createQuery("SELECT book FROM Book book").getResultList();
     }
 
-    List<User> getListUsers() {
+    public List<User> getListUsers() {
         return em.createQuery("SELECT user FROM User user").getResultList();
     }
     public List<History> getReadingBooks(){
@@ -98,7 +98,6 @@ public class DatabaseManager {
 
     public void saveHistory(History history) {
         try {
-            
             em.getTransaction().begin();
             if(history.getId() == null){
                 em.persist(history);

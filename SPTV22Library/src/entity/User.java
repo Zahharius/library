@@ -6,11 +6,16 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 /**
@@ -23,6 +28,9 @@ public class User implements Serializable{
     private Long id;
     private String login;
     private String password;
+    @ElementCollection
+    @OneToMany
+    private List<String> roles = new ArrayList<>();
     @OneToOne
     private Reader reader;
 
@@ -91,6 +99,7 @@ public class User implements Serializable{
         return "User{" 
                 + "login=" + login 
                 + ", password=" + password 
+                + ", roles=" + Arrays.toString(roles.toArray())
                 + ", reader=" + reader.getFirstname()
                 + " " + reader.getLastname()
                 + '}';
@@ -102,6 +111,14 @@ public class User implements Serializable{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
     
     

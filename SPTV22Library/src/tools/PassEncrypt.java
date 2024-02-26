@@ -19,22 +19,21 @@ import javax.crypto.spec.PBEKeySpec;
  * @author admin
  */
 public class PassEncrypt {
-    public String getEncryptPassword(String password, String salt) throws InvalidKeySpecException{
-        KeySpec spec = new PBEKeySpec(password.toCharArray(),salt.getBytes(),65,128);
+    public String getEncryptPassword(String password, String salt){
+        KeySpec spec = new PBEKeySpec(password.toCharArray(),salt.getBytes(),65536,128);
         SecretKeyFactory factory;
-        try{
-            factory = SecretKeyFactory.getInstance("");
-            byte[] hash=factory.generateSecret(spec).getEncoded();
+        try {
+            factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] hash = factory.generateSecret(spec).getEncoded();
             return new BigInteger(hash).toString(16);
-        }catch (NoSuchAlgorithmException ex){
+        } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(PassEncrypt.class.getName()).log(Level.SEVERE, "Нет такого алгоритма", ex);
-        }catch (InvalidKeySpecException ex){
-            Logger.getLogger(PassEncrypt.class.getName()).log(Level.SEVERE, "InvalidKeyExpection", ex);
+        } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(PassEncrypt.class.getName()).log(Level.SEVERE, "InvalidKeySpecException", ex);
         }
         return null;
     }
-    public String getSalt(){
-        return "ЗАСЕКРЕЧЕНО";
+     public String getSalt(){
+        return "Это наша секретная фраза для затруднения подбора пароля взломщиками";
     }
-    
 }

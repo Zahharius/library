@@ -18,11 +18,14 @@ import tools.InputProtection;
 public class BookManager {
 
     private final Scanner scanner;
-
-    public BookManager(Scanner scanner) {
+    private final DatabaseManager databaseManager;
+    
+    public BookManager(Scanner scanner, DatabaseManager databaseManager) {
         this.scanner = scanner;
+        this.databaseManager = databaseManager;
     }
-    public void addBook(DatabaseManager databaseManager){
+    
+    public void addBook(){
         System.out.println("----- Add book -----");
         Book book = new Book();
         System.out.print("Enter title: ");
@@ -36,24 +39,24 @@ public class BookManager {
             String authorFirstname = scanner.nextLine();
             System.out.printf("Enter author (%d) lastname: ",i+1);
             String authorLastname = scanner.nextLine();
-            Author author = databaseManager.getAuthor(authorFirstname, authorLastname);
+            Author author = getDatabaseManager().getAuthor(authorFirstname, authorLastname);
             if(author == null){
                 author = new Author(authorFirstname,authorLastname);
-                databaseManager.saveAuthor(author);
+                getDatabaseManager().saveAuthor(author);
             }
             book.getAuthors().add(author);
         }
         System.out.print("Enter quantity copy: ");
         book.setQuantity(InputProtection.intInput(1,10));
         book.setCount(book.getQuantity());
-        databaseManager.saveBook(book);
+        getDatabaseManager().saveBook(book);
         System.out.println("Added book: "+book.toString());
     }
 
-    public int printListBooks(DatabaseManager databaseManager) {
+    public int printListBooks() {
         int n = 0;
         System.out.println("----- List books -----");
-        List<Book> books = databaseManager.getListBooks();
+        List<Book> books = getDatabaseManager().getListBooks();
         for (int i = 0; i < books.size(); i++) {
             StringBuilder sbAuthorsBook = new StringBuilder();
             for (int j = 0; j < books.get(i).getAuthors().size(); j++) {
@@ -71,5 +74,9 @@ public class BookManager {
             n++;
         }
         return n;
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 }

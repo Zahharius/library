@@ -28,15 +28,19 @@ public class HistoryManager {
 
     private final Scanner scanner;
     private final BookManager bookManager;
-    private final ReaderManager readerManager;
+    private final UserManager readerManager;
+    private final DatabaseManager databaseManager;
 
     public HistoryManager(
             Scanner scanner, 
-            ReaderManager readerManager, 
-            BookManager bookManager) {
+            UserManager readerManager, 
+            BookManager bookManager,
+            DatabaseManager databaseManager
+    ) {
         this.scanner = scanner;
         this.bookManager = bookManager;
         this.readerManager = readerManager;
+        this.databaseManager = databaseManager;
     }
     /**
      * Логика работы метода
@@ -51,27 +55,27 @@ public class HistoryManager {
      * @param databaseManager
      * 
      */
-    public void takeOutBook(DatabaseManager databaseManager) {
+    public void takeOutBook() {
         History history = new History();
-        bookManager.printListBooks(databaseManager);
+        getBookManager().printListBooks();
         System.out.print("Enter number book from list: ");
-        int numberBook = InputProtection.intInput(1, null); 
-        Book book = databaseManager.getBook((long)numberBook);//Ставим book под управление em
+        int numberBook = InputProtection.intInput(1,null); 
+        Book book = getDatabaseManager().getBook((long)numberBook);//Ставим book под управление em
         if(book.getCount() > 0){
             book.setCount(book.getCount() - 1);
-            databaseManager.saveBook(book); //Сохраняем изменненную книгу в базу
+            getDatabaseManager().saveBook(book); //Сохраняем изменненную книгу в базу
             history.setBook(book);
-            history.setUser(databaseManager.getUser(App.user.getId()));//Ставим App.user под управление em
+            history.setUser(getDatabaseManager().getUser(App.user.getId()));//Ставим App.user под управление em
             history.setTakeOutBook(new GregorianCalendar().getTime());
-            databaseManager.saveHistory(history);
+            getDatabaseManager().saveHistory(history);
         }else{
             System.out.println("All books are taken");
         }
     }
 
-    public int printListReadingBooks(DatabaseManager databaseManager) {
+    public int printListReadingBooks() {
         System.out.println("----- List reading books -----");
-        List<History> histories = databaseManager.getReadingBooks();
+        List<History> histories = getDatabaseManager().getReadingBooks();
         for (int i = 0; i < histories.size(); i++) {
             System.out.printf("%d. %s. read %s %s%n",
                     histories.get(i).getId(),
@@ -83,24 +87,24 @@ public class HistoryManager {
         return histories.size();
     }
 
-    public void returnBook(DatabaseManager databaseManager) {
+    public void returnBook() {
         System.out.println("Return book:");
-        this.printListReadingBooks(databaseManager);
+        this.printListReadingBooks();
         System.out.println("Enter number book: ");
         int idReturnBookHistory = InputProtection.intInput(1, null);
-        History history = databaseManager.getHistory((long)idReturnBookHistory);
+        History history = getDatabaseManager().getHistory((long)idReturnBookHistory);
         if(history.getBook().getCount() 
                 < history.getBook().getQuantity()){
             history.getBook().setCount(history.getBook().getCount() + 1);
             history.setReturnBook(new GregorianCalendar().getTime());
-            databaseManager.saveHistory(history);
+            getDatabaseManager().saveHistory(history);
         }else{
             System.out.println("All copies already in stock");
         }
     }
 
-    public void bookRating(DatabaseManager databaseManager) {
-        List<History> histories = databaseManager.getListHistories();
+    public void bookRating() {
+        List<History> histories = getDatabaseManager().getListHistories();
         Map<Book,Integer> mapRatingBook = new HashMap<>();
         for (int i = 0; i < histories.size(); i++) {
             if(mapRatingBook.containsKey(histories.get(i).getBook())){
@@ -128,34 +132,17 @@ public class HistoryManager {
             n++;
         }
     }
-    public void userRating(DatabaseManager databaseManager) {
-        List<History> histories = databaseManager.getListHistories();
-        Map<User,Integer> mapRatingUser = new HashMap<>();
-        for (int i = 0; i < histories.size(); i++) {
-            if(mapRatingUser.containsKey(histories.get(i).getBook())){
-                mapRatingUser.put(histories.get(i).getUser(), mapRatingUser.get(histories.get(i).getUser())+1);
-            }else{
-                mapRatingUser.put(histories.get(i).getUser(),1);
-            }
-        }
-        Map<User, Integer> sortedMapRatingBook = mapRatingUser.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                ));
-        int n = 1;
-        for (Map.Entry<User, Integer> entry : sortedMapRatingBook.entrySet()) {
-            System.out.printf("%d. %s: %d%n",
-                    n,
-                    entry.getKey().getLogin(),
-                    entry.getValue()
-            );
-            n++;
-        }
+
+    public BookManager getBookManager() {
+        return bookManager;
+    }
+
+    public UserManager getReaderManager() {
+        return readerManager;
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
     
 }

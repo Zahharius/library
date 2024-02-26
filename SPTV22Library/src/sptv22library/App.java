@@ -6,14 +6,15 @@
 package sptv22library;
 
 import managers.HistoryManager;
-import managers.ReaderManager;
+import managers.UserManager;
 import entity.History;
+import entity.Reader;
 import entity.User;
-import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Scanner;
 import managers.BookManager;
 import managers.DatabaseManager;
+import static sptv22library.App.user;
 import tools.InputProtection;
 import tools.PassEncrypt;
 
@@ -22,6 +23,9 @@ import tools.PassEncrypt;
  * @author admin
  */
 public class App {
+
+   
+    public static enum ROLES {ADMINISTRATOR, MANAGER, USER};
     public static User user;
     private final Scanner scanner; 
     //private List<Book> books;
@@ -29,7 +33,7 @@ public class App {
     //private List<History> histories;
     
     private final BookManager bookManager;
-    private final ReaderManager readerManager;
+    private final UserManager userManager;
     private final HistoryManager historyManager;
     //private final SaveManager saveManager;
     private final DatabaseManager databaseManager;
@@ -42,24 +46,25 @@ public class App {
         //this.users = saveManager.loadUsers();
         //this.histories = saveManager.loadHistories();
         this.bookManager = new BookManager(scanner);
-        this.readerManager = new ReaderManager(scanner);
-        this.historyManager = new HistoryManager(scanner,readerManager,bookManager);
+        this.userManager = new UserManager(scanner);
+        this.historyManager = new HistoryManager(scanner,userManager,bookManager);
     }
     
     
     
-    public void run() throws InvalidKeySpecException {
+    public void run() {
+        chechAdmin();
         System.out.println("If you have a login and password press y, otherwise press n");
         String word = scanner.nextLine();
         if("n".equals(word)){
-            databaseManager.saveUser(readerManager.addReader());
+            databaseManager.saveUser(userManager.addUser());
         }
-        for(int attempt=0;attempt<3;attempt++){
+        for(int n=0;n<3;n++){
             System.out.print("Please enter your login: ");
             String login = scanner.nextLine();
             System.out.print("Please enter your password: ");
-            String password = scanner.nextLine();
-            PassEncrypt pe =new PassEncrypt();
+            String password = scanner.nextLine().trim();
+            PassEncrypt pe = new PassEncrypt();
             String encryptPassword = pe.getEncryptPassword(password, pe.getSalt());
             App.user = databaseManager.authorization(login, encryptPassword);
             if(App.user != null){
@@ -72,7 +77,7 @@ public class App {
         boolean repeat = true;
         System.out.println("------- Library -------");
         do{
-            System.out.println("List tasks:");
+            System.out.println("List taks:");
             System.out.println("0. Exit");
             System.out.println("1. Add new book");
             System.out.println("2. Print list books");
@@ -82,7 +87,7 @@ public class App {
             System.out.println("6. Print list reading books");
             System.out.println("7. Return book");
             System.out.println("8. Book rating");
-            System.out.println("9. User rating");
+            System.out.println("9. Admin panel");
             System.out.print("Enter task number: ");
             int task = InputProtection.intInput(0,9); 
             System.out.printf("You select task %d, for exit press \"0\", to continue press \"1\": ",task);
@@ -91,18 +96,22 @@ public class App {
             switch (task) {
                 case 0:
                     repeat = false;
-                    break;
+               break;
                 case 1:
+                    if(!App.user.getRoles().contains(App.ROLES.MANAGER.toString())){
+                        System.out.println("Net razreisenija");
+                        break;
+                    }
                     bookManager.addBook(databaseManager);
                     break;
                 case 2:
-                    bookManager.printListBooks(databaseManager);
+                    bookManager.printListBooks();
                     break;
                 case 3:
-                    databaseManager.saveUser(readerManager.addReader());
+                    databaseManager.saveUser(userManager.addUser());
                     break;
                 case 4:
-                    readerManager.printListUserss(databaseManager);
+                    userManager.printListUsers();
                     break;
                 case 5:
                     historyManager.takeOutBook(databaseManager);
@@ -114,17 +123,37 @@ public class App {
                     historyManager.returnBook(databaseManager);
                     break;
                 case 8:
-                    historyManager.bookRating(databaseManager);
+                    historyManager.bookRating();
                     break;
                 case 9:
-                    historyManager.userRating(databaseManager);
+                    if(!App.user.getRoles().contains(App.ROLES.ADMINISTRATOR.toString())){
+                        System.out.println("Net razreisenija");
+                        break;
+                    }
+                    userManager.changeRole(databaseManager);
                     break;
                 default:
                     System.out.println("Select from list tasks!");
             }
             System.out.println("-----------------------");
         }while(repeat);
-        System.out.println("Bye-bye!");
+        System.out.println("By-by!");
     }
-    
+     private void chechAdmin() {
+        if(!(databaseManager.getListUsers().size()>0)){
+            User admin = new User();
+            admin.setLogin("admin");
+            PassEncrypt pe = new PassEncrypt();
+            admin.setPassword(pe.getEncryptPassword("12345", pe.getSalt()));
+            admin.getRoles().add(App.ROLES.ADMINISTRATOR.toString());
+            admin.getRoles().add(App.ROLES.MANAGER.toString());
+            admin.getRoles().add(App.ROLES.USER.toString());
+            Reader reader = new Reader();
+            reader.setFirstname("zahhar");
+            reader.setLastname("simanski");
+            reader.setPhone("389489724");
+            admin.setReader(reader);
+            databaseManager.saveUser(admin);
+        }
+    }
 }
